@@ -1,0 +1,40 @@
+:root {
+    --warmColor: #fb8500;
+    --lightBlue: #8ecae6;
+    --darkBlue: #023047;
+    --mediumBlue: #219ebc;
+    --yellow: #ffb703;
+}
+
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Raleway, 'Franklin Gothic Medium', 'Arial Narrow';
+    /* background-image: url(./Images/milad-fakurian-tGTa40GKSRI-unsplash.jpg); */
+}
+
+li {
+    list-style: none;
+}
+
+body {    
+    height: 100vh;
+}
+
+.header-custom {
+    background-color: var(--yellow);
+}
+
+.day-card {
+    background-color: var(--darkBlue);
+    min-height: 200px;
+}
+
+.fiveDays {
+    color:white;
+}
+
+h3 {
+    color: var(--darkBlue)
+}
