@@ -31,12 +31,13 @@ body {
 }
 
 .day-card {
-    background-color: var(--darkBlue);
+    background-color: var(--lightBlue);
     min-height: 200px;
 }
 
 .fiveDays {
-    color:white;
+    color:var(--darkBlue);
+    font-size: 14px;
 }
 
 #searchBtn:hover {
