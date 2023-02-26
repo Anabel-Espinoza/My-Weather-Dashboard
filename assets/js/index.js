@@ -8,26 +8,32 @@ let fiveDaysCards = document.querySelector('.fiveDays')
 let asideForm = document.querySelector('.aside-form')
 // let key = '...'
 
+let SearchedCity = 'Atlanta'
 // Current weather elements
 let currentTemp = document.createElement('li')
 let currentWind = document.createElement('li')
 let currentHumidity = document.createElement('li')
 mainCard.append(currentTemp, currentWind, currentHumidity)
 
-let searchedCities = document.createElement('ul')
+let searchedCities = document.createElement('div')
 asideForm.append(searchedCities)
 
 // DEFAULT city = Atlanta
 let lat = '33.7489924'
 let lon = '-84.3902644'
 
+// STORE user input value for weather functions
+function assignCity() {
+    searchedCity = cityInput.value
+    getLatLon()
+}
+
 // GET lat and log from city input with Geocoding API
 function getLatLon() {
-    console.log('clicked', cityInput.value)
-    if (cityInput.value) {
-        let apiUrlGeoCoding = 'http://api.openweathermap.org/geo/1.0/direct?q=' + cityInput.value + '&appid=' + key
-        console.log(cityInput.value)
-        saveCityLocalStorage()
+    console.log('clicked', searchedCity)
+    if (searchedCity) {
+        let apiUrlGeoCoding = 'http://api.openweathermap.org/geo/1.0/direct?q=' + searchedCity + '&appid=' + key
+        console.log(searchedCity)
         fetch(apiUrlGeoCoding)
         .then(function(response) {
             if (!response.ok) {
@@ -42,14 +48,18 @@ function getLatLon() {
                 alert ('City not found')
                 let modal = document.querySelector('.modal')
                 // let alertMessage = document.querySelector('.alert')
-                alertModal()  
+                // alertModal()  
   
             } else {
                 lat = data[0].lat
                 lon = data[0].lon
                 console.log('lat', lat, 'lon', lon)
+                isCityValid = true
+                saveCityLocalStorage()
+
                 getCurrentWeather()
                 get5DayForecast()
+
             }
         })
     }
@@ -127,7 +137,7 @@ fetch (forecastUrl)
             
             fiveDaysCards.children[i].append(dateCard, iconForecast, forecastTemp, forecastWind, forecastHum)
         }
-    })
+    }) 
 }
 
 // GET previously searched cities from localStorage
@@ -141,30 +151,43 @@ if (citiesFromLocalStorage) {
 // PRINT previous cities in list
 function printCitiesLocalStorage() {
     searchedCities.textContent = ""
+    searchedCities.classList.add ('d-grid', 'gap-2', 'mx-auto', 'mt-2')
     if (allCities !== null) { 
-
         for (let i=0; i < allCities.length; i++) {
-            let cityLi = document.createElement('li')
-            cityLi.textContent = allCities[i]
-            searchedCities.append(cityLi)
+            let cityBtn = document.createElement('button')
+            cityBtn.classList.add('btn', 'btn-sm', 'btn-secondary')
+            cityBtn.setAttribute('type', 'button')
+            cityBtn.textContent = allCities[i]
+            searchedCities.append(cityBtn)
+            cityBtn.addEventListener('click', getCityFromBtn)
         }
     }
 }
 
 // SAVE new searched city in localStorage
 function saveCityLocalStorage () {
-    let newCity= cityInput.value
-    allCities.push(newCity)
-    localStorage.setItem('allCities', JSON.stringify(allCities))
-    if (allCities.length > 8) {
-        allCities.shift()
+    if (cityInput.value) {
+        allCities.unshift(cityInput.value)
+        if (allCities.length > 6) {
+            allCities.pop()
+        }
+        localStorage.setItem('allCities', JSON.stringify(allCities))
+        printCitiesLocalStorage()
     }
-    printCitiesLocalStorage()
+    cityInput.value = ""
+}
+
+// GET weather by clicking city buttons
+function getCityFromBtn(event) {
+    console.log ('clicked city')
+    let clickedBtn = event.target
+    console.log (clickedBtn.textContent)
+    searchedCity = clickedBtn.textContent
+    getLatLon()
 }
 
 // Event listeners
-searchBtn.addEventListener('click', getLatLon)
-
+searchBtn.addEventListener('click', assignCity)
 
 
 // LOAD page with default city Atlanta
