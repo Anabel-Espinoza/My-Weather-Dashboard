@@ -10,7 +10,7 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Raleway, 'Franklin Gothic Medium', 'Arial Narrow';
+    font-family: laila, Raleway, 'Franklin Gothic Medium', 'Arial Narrow';
 }
 
 li {
@@ -25,6 +25,11 @@ body {
     background-color: var(--yellow);
 }
 
+h1, .search-form, h4 {
+    font-weight: bolder;
+    font-family: Raleway, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
 .main-card {
     background-color: var(--darkBlue);
     color: white;
@@ -37,11 +42,25 @@ body {
 
 .fiveDays {
     color:var(--darkBlue);
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #searchBtn:hover {
     background-color: var(--darkBlue);
     font-weight: 400;
-    color: white
+    color: white;
+    transform: scale(1.04);
+}
+
+.city-buttons:hover {
+    background-color: var(--lightBlue);
+    color: var(--darkBlue)
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: block;
 }

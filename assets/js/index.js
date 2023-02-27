@@ -1,28 +1,38 @@
 // Variables
-
 let cityInput = document.querySelector('#inputCity')
 let searchBtn = document.querySelector('#searchBtn')
 let cityAndDate = document.querySelector('#cityAndDate')
-let mainCard = document.querySelector('.main-card')
 let fiveDaysCards = document.querySelector('.fiveDays')
 let asideForm = document.querySelector('.aside-form')
 // let key = '...'
 
-let SearchedCity = 'Atlanta'
-// Current weather elements
-let currentTemp = document.createElement('li')
-let currentWind = document.createElement('li')
-let currentHumidity = document.createElement('li')
-mainCard.append(currentTemp, currentWind, currentHumidity)
-
-let searchedCities = document.createElement('div')
-asideForm.append(searchedCities)
+let modalAlert = document.querySelector('.modal-alert')
+let closeModal = document.querySelector('.close-modal')
+let SearchedCity = ''
 
 // DEFAULT city = Atlanta
 let lat = '33.7489924'
 let lon = '-84.3902644'
 
-// STORE user input value for weather functions
+// Current weather elements
+let temp = document.querySelector(".temp")
+let wind = document.querySelector(".wind")
+let hum = document.querySelector(".hum")
+
+let currentTemp = document.createElement('p')
+let currentWind = document.createElement('p')
+let currentHumidity = document.createElement('p')
+
+temp.append(currentTemp)
+wind.append(currentWind)
+hum.append(currentHumidity)
+
+// Previously searched city elements
+let searchedCities = document.createElement('div')
+asideForm.append(searchedCities)
+
+
+// STORE user input city for weather functions
 function assignCity() {
     searchedCity = cityInput.value
     getLatLon()
@@ -43,23 +53,21 @@ function getLatLon() {
         })
         .then(function(data) {
             console.log(data)
-            // FORMAT this !!!
             if (data.length === 0) {
-                alert ('City not found')
-                let modal = document.querySelector('.modal')
+                // alert ('City not found')
+                // let modal = document.querySelector('.modal')
                 // let alertMessage = document.querySelector('.alert')
+                // alertMessage.classList.add('show')
                 // alertModal()  
+                modalAlert.classList.add('show')
   
             } else {
                 lat = data[0].lat
                 lon = data[0].lon
                 console.log('lat', lat, 'lon', lon)
-                isCityValid = true
                 saveCityLocalStorage()
-
                 getCurrentWeather()
                 get5DayForecast()
-
             }
         })
     }
@@ -81,7 +89,6 @@ fetch(currentWeatherUrl)
         let dateConvert = dayjs.unix(data.dt)
         let date = dateConvert.format('MMM DD, YY')
         let iconCode = data.weather[0].icon
-        
         cityAndDate.textContent = data.name + ' (' + date + ')' 
         
         // MAKE icon for weather condition
@@ -151,11 +158,11 @@ if (citiesFromLocalStorage) {
 // PRINT previous cities in list
 function printCitiesLocalStorage() {
     searchedCities.textContent = ""
-    searchedCities.classList.add ('d-grid', 'gap-2', 'mx-auto', 'mt-2')
+    searchedCities.classList.add('d-grid', 'gap-2', 'mx-auto', 'mt-2')
     if (allCities !== null) { 
         for (let i=0; i < allCities.length; i++) {
             let cityBtn = document.createElement('button')
-            cityBtn.classList.add('btn', 'btn-sm', 'btn-secondary')
+            cityBtn.classList.add('btn', 'btn-sm', 'btn-secondary', 'city-buttons')
             cityBtn.setAttribute('type', 'button')
             cityBtn.textContent = allCities[i]
             searchedCities.append(cityBtn)
@@ -168,7 +175,7 @@ function printCitiesLocalStorage() {
 function saveCityLocalStorage () {
     if (cityInput.value) {
         allCities.unshift(cityInput.value)
-        if (allCities.length > 6) {
+        if (allCities.length > 7) {
             allCities.pop()
         }
         localStorage.setItem('allCities', JSON.stringify(allCities))
@@ -188,7 +195,9 @@ function getCityFromBtn(event) {
 
 // Event listeners
 searchBtn.addEventListener('click', assignCity)
-
+closeModal.addEventListener('click', function() {
+    modalAlert.classList.remove('show')
+})
 
 // LOAD page with default city Atlanta
 getCurrentWeather()
