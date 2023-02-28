@@ -22,7 +22,6 @@ body {
 }
 
 .header-custom {
-    /* background-image: url(/assets/Images/noaa-kcvlb727mn8-unsplash.jpg); */
     background-color: var(--yellow);
     max-width: 100%;
     height: auto;

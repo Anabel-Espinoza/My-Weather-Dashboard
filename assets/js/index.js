@@ -1,36 +1,18 @@
 // Variables
 let cityInput = document.querySelector('#inputCity')
 let searchBtn = document.querySelector('#searchBtn')
-let cityAndDate = document.querySelector('#cityAndDate')
-let fiveDaysCards = document.querySelector('.fiveDays')
 let asideForm = document.querySelector('.aside-form')
-// let key = '...'
-
+let key = 'b0ebef1f0ca803c72a1a14910d82ee3a'
+let mainContent = document.querySelector('.main-content')
 let modalAlert = document.querySelector('.modal-alert')
 let closeModal = document.querySelector('.close-modal')
 let searchedCity = ''
-
-// DEFAULT city = Atlanta
-let lat = '33.7489924'
-let lon = '-84.3902644'
-
-// Current weather elements
-let temp = document.querySelector(".temp")
-let wind = document.querySelector(".wind")
-let hum = document.querySelector(".hum")
-
-let currentTemp = document.createElement('p')
-let currentWind = document.createElement('p')
-let currentHumidity = document.createElement('p')
-
-temp.append(currentTemp)
-wind.append(currentWind)
-hum.append(currentHumidity)
+let lat = ''
+let lon = ''
 
 // Previously searched city elements
 let searchedCities = document.createElement('div')
 asideForm.append(searchedCities)
-
 
 // STORE user input city for weather functions
 function assignCity() {
@@ -52,22 +34,15 @@ function getLatLon() {
         return response.json()
         })
         .then(function(data) {
-            // console.log(data)
+            console.log(data)
             if (data.length === 0) {
-                // alert ('City not found')
-                // let modal = document.querySelector('.modal')
-                // let alertMessage = document.querySelector('.alert')
-                // alertMessage.classList.add('show')
-                // alertModal()  
                 modalAlert.classList.add('show')
-  
             } else {
                 lat = data[0].lat
                 lon = data[0].lon
                 console.log('lat', lat, 'lon', lon)
                 saveCityLocalStorage()
                 getCurrentWeather()
-                get5DayForecast()
             }
         })
     }
@@ -85,17 +60,46 @@ fetch(currentWeatherUrl)
     })
     .then(function(data) {
         console.log(data)
-        // console.log(data.name, data.dt, data.weather[0].icon)
+        mainContent.innerHTML = ""
         let localTimeZone = (data.timezone)/3600
-        let currentLocalTime = dayjs.unix(data.dt)
-        console.log(dayjs.utc())
-        console.log(currentLocalTime.format('MMM D YY, HH A'))
-
         let date = dayjs.utc().add(localTimeZone, 'hour').format('MMM D, YY')
-        // let date = currentLocalTime.format('MMM D, YY')
-        let iconCode = data.weather[0].icon
+
+        // Current weather elements
+        let currentWeatherCard = document.createElement('div')
+        let cityAndDate = document.createElement('h3')
+        let dataRow = document.createElement('div')
+
         cityAndDate.textContent = data.name + ' (' + date + ')' 
-        
+        let iconCode = data.weather[0].icon
+
+        currentWeatherCard.setAttribute('class', 'bg-gradient main-card card mb-3 p-3')
+        dataRow.setAttribute('class', 'row justify-content-around current-weather')
+
+        mainContent.append(currentWeatherCard)
+        currentWeatherCard.append(cityAndDate)
+        currentWeatherCard.append(dataRow)
+
+        let temp = document.createElement("div")
+        let wind = document.createElement("div")
+        let hum = document.createElement("div")
+
+        temp.setAttribute('class', 'col-lg-3 text-center')
+        wind.setAttribute('class', 'col-lg-3 text-center')
+        hum.setAttribute('class', 'col-lg-3 text-center')
+
+        let tempIcon = document.createElement('img')
+        tempIcon.setAttribute('src','./assets/Images/thermometer-half.svg')
+
+        let currentTemp = document.createElement('p')
+        let currentWind = document.createElement('p')
+        let currentHumidity = document.createElement('p')
+
+        temp.append(currentTemp)
+        wind.append(currentWind)
+        hum.append(currentHumidity)
+
+        dataRow.append(temp, wind, hum)
+
         // MAKE icon for weather condition
         let icon = document.createElement('img')
         icon.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCode + '@2x.png')
@@ -107,6 +111,8 @@ fetch(currentWeatherUrl)
         currentWind.textContent = 'Wind: ' + data.wind.speed + ' mph'
         currentHumidity.textContent = 'Humidity: ' + data.main.humidity + "%"
     })
+    get5DayForecast()
+
 }
 
 // GET weather forecast for the next 5 days
@@ -120,16 +126,22 @@ fetch (forecastUrl)
         return response.json()
     })
     .then (function(data) {
+        let fiveDaysCards = document.createElement('div')
+        fiveDaysCards.setAttribute('class', 'row justify-content-around fiveDays')
+        mainContent.append(fiveDaysCards)
+        
+        // fiveDaysCards.innerHTML = ""
         console.log(data)
-        // empty previous data in cards
-        for (let i=0; i < fiveDaysCards.children.length; i++) {
-            fiveDaysCards.children[i].textContent = ""
-        }
+        
+        let fiveDayheading = document.createElement('h4')
+        fiveDayheading.textContent = '5-day Forecast: '
+        fiveDaysCards.append(fiveDayheading)
         // API gives forecast for every 3 hours, spacing to get 1 per day = 24/3.
         let spaceIndex = 8;
         // FILL forecast cards 5 days
-        for (let i=0; i < fiveDaysCards.children.length; i++) {
+        for (let i=0; i < 5; i++) {
             console.log(spaceIndex * (i+1) -1)
+            let card = document.createElement('div')
             let dateCard = document.createElement('h5')
             let iconForecast = document.createElement('img')
             let forecastTemp = document.createElement('li')
@@ -153,12 +165,14 @@ fetch (forecastUrl)
             let iconCard = data.list[spaceIndex * (i+1)-1].weather[0].icon
             iconForecast.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCard + '@2x.png')
             iconForecast.setAttribute('width', '50px')
+            card.setAttribute('class', 'col-lg-2 col-md-4 col-sm-6 m-1 p-3 bg-gradient day-card')
 
             forecastTemp.textContent = 'Temp: ' + data.list[spaceIndex * (i+1)-1].main.temp + ' °F'
             forecastWind.textContent = 'Wind: ' + data.list[spaceIndex * (i+1)-1].wind.speed + ' mph'
             forecastHum.textContent = 'Humidity: ' + data.list[spaceIndex * (i+1)-1].main.humidity + ' %'
             
-            fiveDaysCards.children[i].append(dateCard, iconForecast, forecastTemp, forecastWind, forecastHum)
+           card.append(dateCard, iconForecast, forecastTemp, forecastWind, forecastHum)
+           fiveDaysCards.append(card)
         }
     }) 
 }
@@ -176,6 +190,8 @@ function printCitiesLocalStorage() {
     searchedCities.textContent = ""
     searchedCities.classList.add('d-grid', 'gap-2', 'mx-auto', 'mt-2')
     if (allCities !== null) { 
+        // let noDuplicates = allCities.filter(value)
+        // console.log(noDuplicates)
         for (let i=0; i < allCities.length; i++) {
             let cityBtn = document.createElement('button')
             cityBtn.classList.add('btn', 'btn-sm', 'btn-secondary', 'city-buttons')
@@ -215,7 +231,4 @@ closeModal.addEventListener('click', function() {
     modalAlert.classList.remove('show')
 })
 
-// LOAD page with default city Atlanta
-getCurrentWeather()
-get5DayForecast ()
 printCitiesLocalStorage()
