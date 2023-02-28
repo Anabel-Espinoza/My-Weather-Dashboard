@@ -2,7 +2,7 @@
 let cityInput = document.querySelector('#inputCity')
 let searchBtn = document.querySelector('#searchBtn')
 let asideForm = document.querySelector('.aside-form')
-// let key = 
+let key = 'b0ebef1f0ca803c72a1a14910d82ee3a'
 let mainContent = document.querySelector('.main-content')
 let modalAlert = document.querySelector('.modal-alert')
 let closeModal = document.querySelector('.close-modal')
@@ -87,16 +87,25 @@ fetch(currentWeatherUrl)
         wind.setAttribute('class', 'col-lg-3 text-center')
         hum.setAttribute('class', 'col-lg-3 text-center')
 
-        let tempIcon = document.createElement('img')
-        tempIcon.setAttribute('src','./assets/Images/thermometer-half.svg')
+        let tempIcon = document.createElement('span')
+        tempIcon.setAttribute('class','material-symbols-outlined')
+        tempIcon.innerText= 'device_thermostat'
+
+        let windIcon = document.createElement('span')
+        windIcon.setAttribute('class','material-symbols-outlined')
+        windIcon.innerText= 'air'
+
+        let humIcon = document.createElement('span')
+        humIcon.setAttribute('class','material-symbols-outlined')
+        humIcon.innerText= 'humidity_percentage'
 
         let currentTemp = document.createElement('p')
         let currentWind = document.createElement('p')
         let currentHumidity = document.createElement('p')
 
-        temp.append(currentTemp)
-        wind.append(currentWind)
-        hum.append(currentHumidity)
+        temp.append(tempIcon, currentTemp)
+        wind.append(windIcon, currentWind)
+        hum.append(humIcon, currentHumidity)
 
         dataRow.append(temp, wind, hum)
 
@@ -112,7 +121,6 @@ fetch(currentWeatherUrl)
         currentHumidity.textContent = 'Humidity: ' + data.main.humidity + "%"
     })
     get5DayForecast()
-
 }
 
 // GET weather forecast for the next 5 days
@@ -190,8 +198,6 @@ function printCitiesLocalStorage() {
     searchedCities.textContent = ""
     searchedCities.classList.add('d-grid', 'gap-2', 'mx-auto', 'mt-2')
     if (allCities !== null) { 
-        // let noDuplicates = allCities.filter(value)
-        // console.log(noDuplicates)
         for (let i=0; i < allCities.length; i++) {
             let cityBtn = document.createElement('button')
             cityBtn.classList.add('btn', 'btn-sm', 'btn-secondary', 'city-buttons')

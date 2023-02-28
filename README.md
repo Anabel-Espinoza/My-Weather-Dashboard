@@ -12,11 +12,15 @@ N/A
 
 **Website link: (https://anabel-espinoza.github.io/My-Weather-Dashboard/)**
 
-1. The user enters city name and the current weather conditions and 5-day forecast are displayed on the screen.
-2. The site will keep the recent city searches and when the user clicks on the button with the city name, the weather information will appear.
+1. The user must enter city name in the search bar and click 'Search'. The current weather conditions for the city, and the 5-day forecast are displayed on the screen.
+2. The site will keep the last seven city searches and when the user clicks on the button with the city name, the weather information for that city will appear.
 
-The website looks like the following image :
-![Weather-Dashboard](./assets/Images/StartGame.png)
+The website looks like the following image before starting a city search:
+![Weather-home](./assets/Images/weather-home.png)
+
+The website looks like the following image when a city search has been conducted:
+![Weather-dashboard](./assets/Images/weather-dashboard-atlanta.png)
+
 
 
 ## Credits
