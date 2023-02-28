@@ -15,7 +15,7 @@
     </head>
 
     <body>
-        <header class=" p-4 bg-image header-custom text-center ">
+        <header class="bg-image p-4 header-custom text-center cover" >
             <h1>Weather Dashboard</h1>
         </header>
         
@@ -30,8 +30,8 @@
                 </div>
             </form>
 
-            <!-- CURRENT WEATHER CARD -->
             <section class="col-lg-9 p-4">
+                <!-- CURRENT WEATHER CARD -->
                 <card class="bg-gradient main-card card mb-3 p-3 border-primary">
                     <h3 id="cityAndDate">City + Date</h3>
                     <div class = "row justify-content-around current-weather ">
@@ -95,6 +95,13 @@
             integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
             crossorigin="anonymous"
         ></script>  
+        <!-- <script src= "https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/plugin/utc.min.js"
+        ></script> -->
+        <script src="https://unpkg.com/dayjs"></script>
+        <script src="https://unpkg.com/dayjs-plugin-utc"></script>
+        <script>
+          dayjs.extend(dayjsPluginUTC.default)
+        </script>
         <script src="./assets/js/index.js"></script>
 
     </body>

@@ -8,7 +8,7 @@ let asideForm = document.querySelector('.aside-form')
 
 let modalAlert = document.querySelector('.modal-alert')
 let closeModal = document.querySelector('.close-modal')
-let SearchedCity = ''
+let searchedCity = ''
 
 // DEFAULT city = Atlanta
 let lat = '33.7489924'
@@ -43,7 +43,7 @@ function getLatLon() {
     console.log('clicked', searchedCity)
     if (searchedCity) {
         let apiUrlGeoCoding = 'http://api.openweathermap.org/geo/1.0/direct?q=' + searchedCity + '&appid=' + key
-        console.log(searchedCity)
+        // console.log(searchedCity)
         fetch(apiUrlGeoCoding)
         .then(function(response) {
             if (!response.ok) {
@@ -52,7 +52,7 @@ function getLatLon() {
         return response.json()
         })
         .then(function(data) {
-            console.log(data)
+            // console.log(data)
             if (data.length === 0) {
                 // alert ('City not found')
                 // let modal = document.querySelector('.modal')
@@ -84,10 +84,15 @@ fetch(currentWeatherUrl)
         return response.json()
     })
     .then(function(data) {
-        // console.log(data)
+        console.log(data)
         // console.log(data.name, data.dt, data.weather[0].icon)
-        let dateConvert = dayjs.unix(data.dt)
-        let date = dateConvert.format('MMM DD, YY')
+        let localTimeZone = (data.timezone)/3600
+        let currentLocalTime = dayjs.unix(data.dt)
+        console.log(dayjs.utc())
+        console.log(currentLocalTime.format('MMM D YY, HH A'))
+
+        let date = dayjs.utc().add(localTimeZone, 'hour').format('MMM D, YY')
+        // let date = currentLocalTime.format('MMM D, YY')
         let iconCode = data.weather[0].icon
         cityAndDate.textContent = data.name + ' (' + date + ')' 
         
@@ -120,7 +125,7 @@ fetch (forecastUrl)
         for (let i=0; i < fiveDaysCards.children.length; i++) {
             fiveDaysCards.children[i].textContent = ""
         }
-        // API gives forecast for every 3 hours, spacing to get 1 per day = 24/3. (But no array index 40)
+        // API gives forecast for every 3 hours, spacing to get 1 per day = 24/3.
         let spaceIndex = 8;
         // FILL forecast cards 5 days
         for (let i=0; i < fiveDaysCards.children.length; i++) {
@@ -130,9 +135,20 @@ fetch (forecastUrl)
             let forecastTemp = document.createElement('li')
             let forecastWind = document.createElement('li')
             let forecastHum = document.createElement('li')
-            
-            let dateTime = (data.list[spaceIndex * (i+1)-1].dt_txt).split(" ")
-            dateCard.textContent = dayjs(dateTime[0]).format('MMM DD, YY')
+
+            console.log('timezone in hrs', data.city.timezone/3600)
+            console.log('utc', data.list[spaceIndex * (i+1)-1].dt_txt)
+            let timeZone = data.city.timezone/3600
+            let utcFromApi = data.list[spaceIndex * (i+1)-1].dt_txt
+            let utc = dayjs(utcFromApi)
+            console.log('utc', dayjs(utc).format('MMM DD YY, HH A'))
+            let localTime = utc.add(timeZone, 'hour')
+            console.log('local time', dayjs(localTime).format('MMM DD YY, HH A'))
+
+            // let dateTime = (data.list[spaceIndex * (i+1)-2].dt_txt).split(" ")
+            // dateCard.textContent = dayjs(dateTime[0]).format('MMM D, YY')
+
+            dateCard.textContent = dayjs(localTime).format('MMM D, YY')
 
             let iconCard = data.list[spaceIndex * (i+1)-1].weather[0].icon
             iconForecast.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCard + '@2x.png')
