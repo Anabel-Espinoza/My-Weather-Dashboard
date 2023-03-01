@@ -114,7 +114,7 @@ fetch(currentWeatherUrl)
 
         dataRow.append(temp, wind, hum)
 
-        // GET icon for current weather condition
+        // GET icon for current weather conditions
         let icon = document.createElement('img')
         icon.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCode + '@2x.png')
         icon.setAttribute('width', '50px')
