@@ -25,7 +25,7 @@ function assignCity() {
 function getLatLon() {
     console.log('clicked', searchedCity)
     if (searchedCity) {
-        let apiUrlGeoCoding = 'http://api.openweathermap.org/geo/1.0/direct?q=' + searchedCity + '&appid=' + key
+        let apiUrlGeoCoding = 'https://api.openweathermap.org/geo/1.0/direct?q=' + searchedCity + '&appid=' + key
         fetch(apiUrlGeoCoding)
         .then(function(response) {
             if (!response.ok) {
@@ -116,7 +116,7 @@ fetch(currentWeatherUrl)
 
         // GET icon for current weather conditions
         let icon = document.createElement('img')
-        icon.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCode + '@2x.png')
+        icon.setAttribute('src', 'https://openweathermap.org/img/wn/' + iconCode + '@2x.png')
         icon.setAttribute('width', '50px')
         cityAndDate.appendChild(icon)
         
@@ -173,7 +173,7 @@ fetch (forecastUrl)
             dateCard.textContent = dayjs(localTime).format('MMM D, YY')
 
             let iconCard = data.list[spaceIndex * (i+1)-1].weather[0].icon
-            iconForecast.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCard + '@2x.png')
+            iconForecast.setAttribute('src', 'https://openweathermap.org/img/wn/' + iconCard + '@2x.png')
             iconForecast.setAttribute('width', '50px')
             card.setAttribute('class', 'col-lg-2 col-md-4 col-sm-6 m-1 p-3 bg-gradient day-card')
 
