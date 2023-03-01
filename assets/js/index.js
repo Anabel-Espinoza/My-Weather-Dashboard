@@ -217,7 +217,7 @@ function saveCityLocalStorage () {
     if (cityInput.value) {
         let isRepeated = false
         for (let i=0; i < allCities.length; i++){
-            if (cityInput.value === allCities[i]){
+            if ((cityInput.value).toUpperCase() === allCities[i].toUpperCase()){
                 isRepeated = true
                 cityInput.value = ""
                 return
