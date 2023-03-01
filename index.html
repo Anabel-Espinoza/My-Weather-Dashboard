@@ -16,13 +16,12 @@
     </head>
 
     <body>
-        <header class="bg-image p-4 header-custom text-center cover" >
+        <header class="bg-image bg-gradient p-4 header-custom text-center cover" >
             <h1>Weather Dashboard</h1>
         </header>
         
         <main class="row align-items-top">   
-            
-            <!-- SEARCH - RIGHT COLUMN -->
+            <!-- SEARCH - LEFT COLUMN -->
             <form class="form aside-form col-lg-3 p-5">
                 <label class="search-form form-label h4">Search for a city</label>
                 <input type="text" class="form-control" id="inputCity">
@@ -43,7 +42,7 @@
                       <h5 class="modal-title">Oops!</h5>
                     </div>
                     <div class="modal-body">
-                      <p>The city was not found, please try again.</p>
+                      <p class="alert-message"></p>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
@@ -73,7 +72,5 @@
           dayjs.extend(dayjsPluginUTC.default)
         </script>
         <script src="./assets/js/index.js"></script>
-
     </body>
-
     </html>

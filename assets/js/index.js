@@ -6,6 +6,7 @@ let key = 'b0ebef1f0ca803c72a1a14910d82ee3a'
 let mainContent = document.querySelector('.main-content')
 let modalAlert = document.querySelector('.modal-alert')
 let closeModal = document.querySelector('.close-modal')
+let alertMessage = document.querySelector('.alert-message')
 let searchedCity = ''
 let lat = ''
 let lon = ''
@@ -25,7 +26,6 @@ function getLatLon() {
     console.log('clicked', searchedCity)
     if (searchedCity) {
         let apiUrlGeoCoding = 'http://api.openweathermap.org/geo/1.0/direct?q=' + searchedCity + '&appid=' + key
-        // console.log(searchedCity)
         fetch(apiUrlGeoCoding)
         .then(function(response) {
             if (!response.ok) {
@@ -36,6 +36,7 @@ function getLatLon() {
         .then(function(data) {
             console.log(data)
             if (data.length === 0) {
+                alertMessage.textContent = "The city was not found, please try again."
                 modalAlert.classList.add('show')
             } else {
                 lat = data[0].lat
@@ -45,7 +46,11 @@ function getLatLon() {
                 getCurrentWeather()
             }
         })
+    } else {
+        alertMessage.textContent = "Enter city name."
+        modalAlert.classList.add('show')
     }
+
 }
 
 // GET current weather data 
@@ -109,7 +114,7 @@ fetch(currentWeatherUrl)
 
         dataRow.append(temp, wind, hum)
 
-        // MAKE icon for weather condition
+        // GET icon for current weather condition
         let icon = document.createElement('img')
         icon.setAttribute('src', 'http://openweathermap.org/img/wn/' + iconCode + '@2x.png')
         icon.setAttribute('width', '50px')
@@ -134,21 +139,22 @@ fetch (forecastUrl)
         return response.json()
     })
     .then (function(data) {
+        console.log(data)
+        
         let fiveDaysCards = document.createElement('div')
         fiveDaysCards.setAttribute('class', 'row justify-content-around fiveDays')
         mainContent.append(fiveDaysCards)
         
-        // fiveDaysCards.innerHTML = ""
-        console.log(data)
-        
         let fiveDayheading = document.createElement('h4')
         fiveDayheading.textContent = '5-day Forecast: '
         fiveDaysCards.append(fiveDayheading)
+        
         // API gives forecast for every 3 hours, spacing to get 1 per day = 24/3.
         let spaceIndex = 8;
         // FILL forecast cards 5 days
         for (let i=0; i < 5; i++) {
             console.log(spaceIndex * (i+1) -1)
+            
             let card = document.createElement('div')
             let dateCard = document.createElement('h5')
             let iconForecast = document.createElement('img')
@@ -157,16 +163,12 @@ fetch (forecastUrl)
             let forecastHum = document.createElement('li')
 
             console.log('timezone in hrs', data.city.timezone/3600)
-            console.log('utc', data.list[spaceIndex * (i+1)-1].dt_txt)
             let timeZone = data.city.timezone/3600
             let utcFromApi = data.list[spaceIndex * (i+1)-1].dt_txt
             let utc = dayjs(utcFromApi)
             console.log('utc', dayjs(utc).format('MMM DD YY, HH A'))
             let localTime = utc.add(timeZone, 'hour')
             console.log('local time', dayjs(localTime).format('MMM DD YY, HH A'))
-
-            // let dateTime = (data.list[spaceIndex * (i+1)-2].dt_txt).split(" ")
-            // dateCard.textContent = dayjs(dateTime[0]).format('MMM D, YY')
 
             dateCard.textContent = dayjs(localTime).format('MMM D, YY')
 
@@ -179,8 +181,8 @@ fetch (forecastUrl)
             forecastWind.textContent = 'Wind: ' + data.list[spaceIndex * (i+1)-1].wind.speed + ' mph'
             forecastHum.textContent = 'Humidity: ' + data.list[spaceIndex * (i+1)-1].main.humidity + ' %'
             
-           card.append(dateCard, iconForecast, forecastTemp, forecastWind, forecastHum)
-           fiveDaysCards.append(card)
+            card.append(dateCard, iconForecast, forecastTemp, forecastWind, forecastHum)
+            fiveDaysCards.append(card)
         }
     }) 
 }
@@ -209,22 +211,32 @@ function printCitiesLocalStorage() {
     }
 }
 
-// SAVE new searched city in localStorage
+// SAVE new searched city in localStorage. 
+// First check city is not already in local storage array. Store up to 7 cities
 function saveCityLocalStorage () {
     if (cityInput.value) {
-        allCities.unshift(cityInput.value)
-        if (allCities.length > 7) {
-            allCities.pop()
+        let isRepeated = false
+        for (let i=0; i < allCities.length; i++){
+            if (cityInput.value === allCities[i]){
+                isRepeated = true
+                cityInput.value = ""
+                return
+            }
         }
-        localStorage.setItem('allCities', JSON.stringify(allCities))
-        printCitiesLocalStorage()
+        if (isRepeated === false) {
+            allCities.unshift(cityInput.value)
+            if (allCities.length > 7) {
+                allCities.pop()
+            }
+            localStorage.setItem('allCities', JSON.stringify(allCities))
+            printCitiesLocalStorage()
+        }
+        cityInput.value = ""
     }
-    cityInput.value = ""
 }
 
 // GET weather by clicking city buttons
 function getCityFromBtn(event) {
-    console.log ('clicked city')
     let clickedBtn = event.target
     console.log (clickedBtn.textContent)
     searchedCity = clickedBtn.textContent
